@@ -311,7 +311,7 @@ def generateKineticsGroupValues(family, database, trainingSetLabels, method):
         
         x, residues, rank, s = numpy.linalg.lstsq(A, b)
         
-        # Store the results
+        # updating and storing the results 
         family.groups.top[0].data = Arrhenius(
             A = (math.exp(x[-3]),kunits),
             n = x[-2],
@@ -337,7 +337,7 @@ def generateKineticsGroupValues(family, database, trainingSetLabels, method):
         Ea = entry.data.Ea.value / 1000.
         print '%-39s %11.3f %11.3f %11.3f' % (label, logA, n, Ea)
         print '--------------------------------------- ----------- ----------- -----------'
-        for i, group in enumerate(groupList):
+        for group in enumerate(groupList):
             label = group.label
             logA = math.log10(group.data.A.value)
             n = group.data.n.value
@@ -389,7 +389,7 @@ def generateKineticsGroupValues(family, database, trainingSetLabels, method):
             Ea = (x[-1,2]*1000.,"J/mol"),
             T0 = (1,"K"),
         )
-        for i, group in enumerate(groupList):
+        for group in enumerate(groupList):
             group.data = Arrhenius(
                 A = (math.exp(x[i,0]),kunits),
                 n = x[i,1],
@@ -398,23 +398,23 @@ def generateKineticsGroupValues(family, database, trainingSetLabels, method):
             )
         
         # Print the results
-        print '======================================= =========== =========== ==========='
-        print 'Group                                   log A (SI)  n           Ea (kJ/mol)   '
-        print '======================================= =========== =========== ==========='
+        print ('======================================= =========== =========== ===========')
+        print ('Group                                   log A (SI)  n           Ea (kJ/mol)')
+        print ('======================================= =========== =========== ===========')
         entry = family.groups.top[0]
         label = ', '.join(['%s' % (top.label) for top in family.groups.top])
         logA = math.log10(entry.data.A.value)
         n = entry.data.n.value
         Ea = entry.data.Ea.value / 1000.
         print '%-39s %11.3f %11.3f %11.3f' % (label, logA, n, Ea)
-        print '--------------------------------------- ----------- ----------- -----------'
+        print ('--------------------------------------- ----------- ----------- -----------')
         for i, group in enumerate(groupList):
             label = group.label
             logA = math.log10(group.data.A.value)
             n = group.data.n.value
             Ea = group.data.Ea.value / 1000.
             print '%-39s %11.3f %11.3f %11.3f' % (label, logA, n, Ea)
-        print '======================================= =========== =========== ==========='
+        print ('======================================= =========== =========== ===========')
     
     # Add a note to the history of each changed item indicating that we've generated new group values
     changed = False
@@ -441,7 +441,7 @@ def generateKineticsGroupValues(family, database, trainingSetLabels, method):
     
     return changed
 
-################################################################################
+print ('################################################################################')
 
 def evaluateKineticsGroupValues(family, database, testSetLabels, mode, plot):
     """
@@ -461,7 +461,7 @@ def evaluateKineticsGroupValues(family, database, testSetLabels, mode, plot):
                 testSetLabels.append(label)
                 testSetLabels.append('{0}_RMG_Java'.format(label))
                 
-    print 'Categorizing reactions in test sets for {0}'.format(family.label)
+    print ('Categorizing reactions in test sets for {0}'.format(family.label))
     testSets = createDataSet(testSetLabels, family, database)
     
     # For each entry in each test set, determine the kinetics as predicted by
@@ -604,11 +604,11 @@ def evaluateKineticsGroupValues(family, database, testSetLabels, mode, plot):
                 reaction, template, entry, kmodel, kdata = testSet[ind]
                 kunits = 'm^3/(mol*s)' if len(reaction.reactants) == 2 else 's^-1'
                 print label
-                print 'template = [%s]' % (', '.join([g.label for g in template]))
-                print 'entry = %r' % (entry)
-                print '%s' % (reaction)
-                print 'k_data   = %9.2e %s' % (xdata[ind], kunits)
-                print 'k_model  = %9.2e %s' % (ydata[ind], kunits)
+                print ('template = [%s]' % (', '.join([g.label for g in template]))
+                print ('entry = %r' % (entry))
+                print ('%s' % (reaction))
+                print ('k_data   = %9.2e %s' % (xdata[ind], kunits))
+                print ('k_model  = %9.2e %s' % (ydata[ind], kunits))
             
         connection_id = fig.canvas.mpl_connect('pick_event', onpick)
         
@@ -815,12 +815,12 @@ def getFromJava(args):
             testSetLabels = ['PrIMe'],
          )
         except (VerySpecificException, Exception) as e:
-            print "FAILED on "+family
-            print "EXCEPTION: "+str(e)
+            print ("FAILED on "+family)
+            print ("EXCEPTION: "+str(e))
             failures.append(family)
         else:
             successes.append(family)
-    print 'COMPLETED making RMG-Java kinetics for:'
+    print ('COMPLETED making RMG-Java kinetics for:')
     for family in successes:
         print "  "+family
     print 'FAILED while making RMG-Java kinetics for:'
@@ -869,4 +869,4 @@ if __name__ == '__main__':
                 break
         else:
             parser.print_help()
-        print 'ArgumentError: {0}'.format(e)
+        print ('ArgumentError: {0}'.format(e))
